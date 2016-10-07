@@ -82,16 +82,10 @@ Para poder utilizar la herramienta es necesario contar con [NodeJS](https://node
 Mediante el archivo de configuración ```pgconfig.js``` la herramienta se conecta a la base de datos. Una vez conectada realiza la siguiente consulta:
 
 ```sql
-SELECT a.table_name AS name, b.column_name AS pkey 
-
-FROM information_schema.table_constraints a,
-
-information_schema.key_column_usage b
-
-WHERE a.constraint_type = 'PRIMARY KEY'
-
-AND b.table_name = a.table_name
-
-AND b.constraint_name = a.constraint_name
-
+SELECT	a.table_name AS name, b.column_name AS pkey 
+FROM	information_schema.table_constraints a,
+		information_schema.key_column_usage b
+WHERE   a.constraint_type = 'PRIMARY KEY'
+	AND b.table_name = a.table_name
+	AND b.constraint_name = a.constraint_name
 ```
