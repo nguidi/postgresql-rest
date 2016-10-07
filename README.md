@@ -50,3 +50,48 @@ Mientras que para los artículos sera:
 ![REST API Articulos](https://raw.githubusercontent.com/nguidi/postgresql-rest/master/docs/api-articulos.png "REST API Articulos")
 
 Con las consideraciones que las acciones de crear (POST) y actualizar (PUT) aceptan parámetros en el cuerpo de la petición y la acción de obtener una colección (GET) aceptan parámetros de paginación en la URL.
+
+## Herramienta
+
+Esta herramienta permite la creación de una API REST de forma automática. Para su funcionamiento se requiere que la base de datos cumpla que los registros de sus tablas sean identificables mediante una única clave primaria, es decir, que exista una única columna por tabla que identifique a sus registros.
+
+#### Requerimientos
+
+Para poder utilizar la herramienta es necesario contar con [NodeJS](https://nodejs.org/) instalado en su sistema. Una base de datos PostgreSQL y las credenciales necesarias para acceder a la misma.
+
+#### Instalación
+
+1. Descargar la herramienta (o clonarla).
+2. Ingresar al directorio y utilizar el comando: 
+
+ ```
+ npm install
+ ```
+3. Modificar el archivo de configuración ```pgconfig.js``` de manera que se ajuste a los datos de conexión a su base de datos.
+
+4. Iniciar la aplicacion utilizando el comando:
+
+ ```
+ npm install
+ ```
+
+5. Utilizar la API mediante alguna aplicación REST.
+
+#### Como funciona
+
+Mediante el archivo de configuración ```pgconfig.js``` la herramienta se conecta a la base de datos. Una vez conectada realiza la siguiente consulta:
+
+```sql
+SELECT a.table_name AS name, b.column_name AS pkey 
+
+FROM information_schema.table_constraints a,
+
+information_schema.key_column_usage b
+
+WHERE a.constraint_type = 'PRIMARY KEY'
+
+AND b.table_name = a.table_name
+
+AND b.constraint_name = a.constraint_name
+
+```
