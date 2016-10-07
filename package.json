@@ -1,0 +1,18 @@
+{
+  "name": "gestion",
+  "version": "1.0.0",
+  "description": "Herramienta - Gestion de Datos 2016",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "pg-promise": "^5.3.4",
+    "read-json": "^1.0.3"
+  }
+}
