@@ -1,5 +1,7 @@
 # PostgreSQL RESTful API
 
+Esta herramienta permite la creación de una API REST de forma automática. Para su funcionamiento se requiere que la base de datos cumpla que los registros de sus tablas sean identificables mediante una única clave primaria, es decir, que exista una única columna por tabla que identifique a sus registros.
+
 ## RESTful
 
 Es una arquitectura que define la manera en la que algunos estándares web, como HTTP y las URLs, deben de ser usadas. 
@@ -70,8 +72,6 @@ Con las consideraciones que las acciones de crear (POST) y actualizar (PUT) acep
 
 ## Herramienta
 
-Esta herramienta permite la creación de una API REST de forma automática. Para su funcionamiento se requiere que la base de datos cumpla que los registros de sus tablas sean identificables mediante una única clave primaria, es decir, que exista una única columna por tabla que identifique a sus registros.
-
 #### Requerimientos
 
 Para poder utilizar la herramienta es necesario contar con [NodeJS](https://nodejs.org/) instalado en su sistema. Una base de datos PostgreSQL y las credenciales necesarias para acceder a la misma.
@@ -89,7 +89,7 @@ Para poder utilizar la herramienta es necesario contar con [NodeJS](https://node
 4. Iniciar la aplicacion utilizando el comando:
 
  ```
- npm install
+ npm start
  ```
 
 5. Utilizar la API mediante alguna aplicación REST.
@@ -109,14 +109,14 @@ WHERE   a.constraint_type = 'PRIMARY KEY'
 
 Dicha consulta realiza una asociación entre la tabla de restricciones y el tipo de restricción para determinar que columna es la clave primaria de cada tabla. Obtendremos un resultado similar al siguiente:
 
-|   | name          | pkey   |
-| - | ------------- | ------ |
-| 1 | articulos     | codigo |
-| 2 | usuarios      | id     |
+| name          | pkey   |
+| ------------- | ------ |
+| articulos     | codigo |
+| usuarios      | id     |
 
 El resultado es tomado y parseado por JavaScript obteniendo una colección de objetos en donde cada objeto tiene el nombre de la tabla y su clave primaria.
 
-```json
+```javascript
 [
 	{
 		name: 'articulos'
