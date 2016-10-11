@@ -39,11 +39,11 @@ var pg = require("pg-promise")();
 
 
 //	Obtengo los parametros de conexion
-var pgconfig
-=	require("./pgconfig.js");
+var config
+=	require("./config.js");
 
 //	Me conecto con la base de datos
-var db = pg(pgconfig);
+var db = pg(config.db);
 
 //	Obtengo	el nombre de las tablas de la base de datos
 getTablesName(
@@ -61,7 +61,7 @@ getTablesName(
 					//	GET /api/{table}
 					app
 						.get(
-							"/api/"+table.name
+							"/"+config.api.prefix+"/"+table.name
 						,	function(req, res, next)
 							{
 								//	Calculo el offset
@@ -97,7 +97,7 @@ getTablesName(
 					//	GET /api/{table}/:id
 					app
 						.get(
-							"/api/"+table.name+"/:pkey"
+							"/"+config.api.prefix+"/"+table.name+"/:pkey"
 						,	function(req, res, next)
 							{
 								//	Realizo la consulta
@@ -122,7 +122,7 @@ getTablesName(
 					//	POST /api/{table}
 					app
 						.post(
-							"/api/"+table.name
+							"/"+config.api.prefix+"/"+table.name
 						,	function(req, res, next)
 							{
 								//	Genero la consulta
@@ -179,7 +179,7 @@ getTablesName(
 					//	PUT /api/{table}/:id
 					app
 						.put(
-							"/api/"+table.name+"/:pkey"
+							"/"+config.api.prefix+"/"+table.name+"/:pkey"
 						,	function(req, res, next)
 							{
 								//	Genero la consulta
@@ -227,7 +227,7 @@ getTablesName(
 					//	DELETE /api/{table}/:id
 					app
 						.delete(
-							"/api/"+table.name+"/:pkey"
+							"/"+config.api.prefix+"/"+table.name+"/:pkey"
 						,	function(req, res, next)
 							{
 								//	Genero la consulta

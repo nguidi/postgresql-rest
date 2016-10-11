@@ -12,7 +12,12 @@ Este propone una serie de principios de diseño fundamentales que deben ser segu
 
 REST establece una asociación uno-a-uno entre las operaciones de crear, leer, actualizar y borrar y los métodos HTTP.
 
-![CRUD vs REST vs SQL](https://raw.githubusercontent.com/nguidi/postgresql-rest/master/docs/crud-rest-sql.png "CRUD vs REST vs SQL")
+| HTTP/REST  | CRUD      | SQL     | Acción     |
+| ---------- | --------- | ------- | ---------- |
+| POST       | Create    | INSERT  | Crear      |
+| GET        | Retrieve  | SELECT  | Obtener    |
+| PUT        | Update    | UPDATE  | Actualizar |
+| DELETE     | Delete    | DELETE  | Borrar     |
 
 Es decir, usaremos:
 
@@ -43,11 +48,23 @@ Llamamos recurso a cada uno de los registros que componen nuestras tablas. El co
 
 En este caso, nuestra REST API para los usuarios tendrá la siguiente forma:
 
-![REST API Usuarios](https://raw.githubusercontent.com/nguidi/postgresql-rest/master/docs/api-usuarios.png "REST API Usuarios")
+| METODO | URL                  | Acción                                   |
+| ------ | -------------------- | ----------------------------------------------- |
+| GET    | api/usuarios?page=n  | Obtiene todos los usuarios paginados de a 10    |
+| GET    | api/usuarios/:id     | Obtiene el usuario con la id correspondiente    |
+| POST   | api/usuarios         | Crea un nuevo usuario                           |
+| PUT    | api/usuarios/:id     | Actualiza el usuario con la id correspondiente  |
+| DELETE | api/usuarios/:id     | Borra el usuario con la id correspondiente      |
 
 Mientras que para los artículos sera:
 
-![REST API Articulos](https://raw.githubusercontent.com/nguidi/postgresql-rest/master/docs/api-articulos.png "REST API Articulos")
+| METODO | URL                    | Acción                                              |
+| ------ | ---------------------- | --------------------------------------------------- |
+| GET    | api/articulos?page=n   | Obtiene todos los articulos paginados de a 10       |
+| GET    | api/articulos/:codigo  | Obtiene el articulo con el codigo correspondiente   |
+| POST   | api/articulos          | Crea un nuevo articulo                              |
+| PUT    | api/articulos/:codigo  | Actualiza el articulo con el codigo correspondiente |
+| DELETE | api/articulos/:codigo  | Borra el articulo con el codigo correspondiente     |
 
 Con las consideraciones que las acciones de crear (POST) y actualizar (PUT) aceptan parámetros en el cuerpo de la petición y la acción de obtener una colección (GET) aceptan parámetros de paginación en la URL.
 
@@ -67,7 +84,7 @@ Para poder utilizar la herramienta es necesario contar con [NodeJS](https://node
  ```
  npm install
  ```
-3. Modificar el archivo de configuración ```pgconfig.js``` de manera que se ajuste a los datos de conexión a su base de datos.
+3. Modificar el archivo de configuración ```config.js``` de manera que se ajuste a los datos de conexión a su base de datos.
 
 4. Iniciar la aplicacion utilizando el comando:
 
@@ -79,7 +96,7 @@ Para poder utilizar la herramienta es necesario contar con [NodeJS](https://node
 
 #### Como funciona
 
-Mediante el archivo de configuración ```pgconfig.js``` la herramienta se conecta a la base de datos. Una vez conectada realiza la siguiente consulta:
+La herramienta toma los datos de conexion del archivo ```config.js```, se conecta a la base de datos y realiza la siguiente consulta para obtener el listado de columnas y su respectiva clave primaria:
 
 ```sql
 SELECT	a.table_name AS name, b.column_name AS pkey 
@@ -89,3 +106,36 @@ WHERE   a.constraint_type = 'PRIMARY KEY'
 	AND b.table_name = a.table_name
 	AND b.constraint_name = a.constraint_name
 ```
+
+Dicha consulta realiza una asociación entre la tabla de restricciones y el tipo de restricción para determinar que columna es la clave primaria de cada tabla. Obtendremos un resultado similar al siguiente:
+
+|   | name          | pkey   |
+| - | ------------- | ------ |
+| 1 | articulos     | codigo |
+| 2 | usuarios      | id     |
+
+El resultado es tomado y parseado por JavaScript obteniendo una colección de objetos en donde cada objeto tiene el nombre de la tabla y su clave primaria.
+
+```json
+[
+	{
+		name: 'articulos'
+	,	pkey: 'codigo'
+	}
+,	{
+		name: 'usuarios'
+	,	pkey: 'id'
+	}
+]
+
+```
+
+Luego se itera sobre cada elemento de la coleccion tomando el nombre de la tabla (atributo name) y generando asi las funciones que seran disparadas cuando se realicen las peticiones asociadas a la tabla. Por ejemplo, tomando como modelo a la tabla usuarios, obtendremos:
+
+| METODO | URL                  | Consulta SQL                                                      |
+| ------ | -------------------- | ----------------------------------------------------------------- |
+| GET    | api/usuarios?page=n  | SELECT * FROM usuarios LIMIT 10 OFFSET X                          |
+| GET    | api/usuarios/:id     | SELECT * FROM usuarios WHERE id = 'X'                             |
+| POST   | api/usuarios         | INSERT INTO public.usuarios(nombre,edad) VALUES ('X','Y')         |
+| PUT    | api/usuarios/:id     | UPDATE public.usuarios SET nombre='X', edad = 'Y' WHERE id = 'Z'  |
+| DELETE | api/usuarios/:id     | DELETE FROM public.usuarios WHERE id = 'X'                        |
