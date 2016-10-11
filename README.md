@@ -139,3 +139,32 @@ Luego se itera sobre cada elemento de la coleccion tomando el nombre de la tabla
 | POST   | api/usuarios         | INSERT INTO public.usuarios(nombre,edad) VALUES ('X','Y')         |
 | PUT    | api/usuarios/:id     | UPDATE public.usuarios SET nombre='X', edad = 'Y' WHERE id = 'Z'  |
 | DELETE | api/usuarios/:id     | DELETE FROM public.usuarios WHERE id = 'X'                        |
+
+Ahora si realizamos una petición del tipo GET a api/usuarios la herramienta realizara la consulta SQL correspondiente y parseara el resultado generando un documento JSON el cual sera enviado en la respuesta de la peticion.
+
+Si analizamos el cuerpo de la respuesta encontraremos el siguiente JSON:
+
+```javascript
+[
+  {
+    "id": 1,
+    "nombre": "aleman1542",
+    "edad": 20
+  },
+  {
+    "id": 2,
+    "nombre": "widis",
+    "edad": 20
+  },
+  {
+    "id": 3,
+    "nombre": "juli1994",
+    "edad": 20
+  },
+  {
+    "id": 4,
+    "nombre": "fauste",
+    "edad": 20
+  }
+]
+```

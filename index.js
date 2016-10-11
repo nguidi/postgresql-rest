@@ -263,7 +263,7 @@ getTablesName(
 		
 		app
 			.listen(
-				3000
+				config.api.port
 			,	function()
 				{
 					console.log('Postgress Restfull api listening on port 3000!');
